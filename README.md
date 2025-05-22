@@ -11,6 +11,7 @@ Next.js と microCMS を使用したブログサイトのテンプレートで�
 - カテゴリー表示
 - 最適化されたキャッシュ制御
 - 魅力的なファーストビュー
+- 記事プレビュー機能
 
 ## 必要条件
 
@@ -52,6 +53,16 @@ npm install
    - name (テキストフィールド) - 必須
 4. いくつかのカテゴリーを作成します。
 5. 「blogs」APIの「category」フィールドの参照先を「categories」に設定します。
+
+#### プレビュー機能の設定
+
+1. microCMSの管理画面で「サービス設定」→「API設定」→「画面プレビュー」を開きます。
+2. 「画面プレビューボタンの表示」をオンにします。
+3. 「遷移先URL」に以下のURLを設定します：
+   \`\`\`
+   https://あなたのドメイン/api/preview?contentId={CONTENT_ID}&draftKey={DRAFT_KEY}
+   \`\`\`
+4. 「変更する」ボタンをクリックして設定を保存します。
 
 ### 4. 環境変数の設定
 
@@ -147,47 +158,12 @@ theme: {
 - キャッシュの問題の可能性があります。ブラウザのキャッシュをクリアするか、シークレットモードで確認してください。
 - `revalidate`の値を調整することで、キャッシュの更新頻度を変更できます。
 
+### プレビューが機能しない
+
+- microCMSの「画面プレビュー」設定が正しく行われているか確認してください。
+- 遷移先URLが正しく設定されているか確認してください。
+- Vercelにデプロイしている場合は、環境変数が正しく設定されているか確認してください。
+
 ## ライセンス
 
 MIT
-\`\`\`
-
-また、`.gitignore`ファイルに`.env`と`.env.local`が含まれていることを確認します：
-
-```txt file=".gitignore"
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
-
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# local env files
-.env*.local
-.env
-
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts

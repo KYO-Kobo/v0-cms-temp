@@ -1,4 +1,5 @@
 import { createClient } from "microcms-js-sdk"
+import { draftMode } from "next/headers"
 
 if (!process.env.MICROCMS_SERVICE_DOMAIN) {
   throw new Error("MICROCMS_SERVICE_DOMAIN is required")
@@ -15,7 +16,7 @@ export const client = createClient({
 
 export const getContents = async (endpoint: string, queries?: any) => {
   try {
-    // キャッシュを制御するためのオプションを追加
+    const { isEnabled } = draftMode()
     const options = {
       endpoint,
       queries: {
@@ -33,7 +34,7 @@ export const getContents = async (endpoint: string, queries?: any) => {
 
 export const getContent = async (endpoint: string, contentId: string, queries?: any) => {
   try {
-    // キャッシュを制御するためのオプションを追加
+    const { isEnabled } = draftMode()
     const options = {
       endpoint,
       contentId,
