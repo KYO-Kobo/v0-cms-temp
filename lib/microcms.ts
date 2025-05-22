@@ -15,10 +15,15 @@ export const client = createClient({
 
 export const getContents = async (endpoint: string, queries?: any) => {
   try {
-    const data = await client.get({
+    // キャッシュを制御するためのオプションを追加
+    const options = {
       endpoint,
-      queries,
-    })
+      queries: {
+        ...queries,
+      },
+    }
+
+    const data = await client.get(options)
     return data
   } catch (error) {
     console.error(`Error fetching contents from endpoint "${endpoint}":`, error)
@@ -28,11 +33,16 @@ export const getContents = async (endpoint: string, queries?: any) => {
 
 export const getContent = async (endpoint: string, contentId: string, queries?: any) => {
   try {
-    const data = await client.get({
+    // キャッシュを制御するためのオプションを追加
+    const options = {
       endpoint,
       contentId,
-      queries,
-    })
+      queries: {
+        ...queries,
+      },
+    }
+
+    const data = await client.get(options)
     return data
   } catch (error) {
     console.error(`Error fetching content "${contentId}" from endpoint "${endpoint}":`, error)

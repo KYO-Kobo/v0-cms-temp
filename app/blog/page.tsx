@@ -2,11 +2,17 @@ import { getContents } from "@/lib/microcms"
 import type { BlogResponse } from "@/types/blog"
 import BlogCard from "@/components/blog-card"
 
-export const revalidate = 60
+// revalidateの値を小さくする
+export const revalidate = 10
 
 export default async function BlogPage() {
   try {
-    const data = (await getContents("blogs", { limit: 10 })) as BlogResponse
+    // キャッシュを無効化するためのオプションを追加
+    const data = (await getContents("blogs", {
+      limit: 10,
+      fields: ["id", "title", "eyecatch", "category", "publishedAt"],
+      _: new Date().getTime(),
+    })) as BlogResponse
 
     return (
       <div className="bg-gray-50">

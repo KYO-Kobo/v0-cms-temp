@@ -2,39 +2,52 @@ import Link from "next/link"
 import { getContents } from "@/lib/microcms"
 import type { BlogResponse } from "@/types/blog"
 import BlogCard from "@/components/blog-card"
+import HeroSection from "@/components/hero-section"
+
+// revalidateを明示的に設定し、時間を短くする
+export const revalidate = 10
 
 export default async function Home() {
   try {
-    const data = (await getContents("blogs", { limit: 3 })) as BlogResponse
+    // キャッシュを無効化するためのオプションを追加
+    const data = (await getContents("blogs", {
+      limit: 3,
+      fields: ["id", "title", "eyecatch", "category", "publishedAt"],
+      _: new Date().getTime(),
+    })) as BlogResponse
 
     return (
-      <div className="bg-gray-50">
-        <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
-          <div className="lg:text-center">
-            <h2 className="text-base text-blue-600 font-semibold tracking-wide uppercase">ブログサイト</h2>
-            <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-              最新の記事
-            </p>
-            <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">microCMSで作成したブログサイトへようこそ</p>
-          </div>
+      <>
+        {/* ファーストビュー */}
+        <HeroSection />
 
-          <div className="mt-10">
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {data.contents.map((blog) => (
-                <BlogCard key={blog.id} blog={blog} />
-              ))}
+        {/* 最新記事セクション */}
+        <div id="latest-articles" className="bg-gray-50 py-12 sm:py-16 lg:py-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center">
+              <h2 className="text-base font-semibold tracking-wide uppercase text-blue-600">ブログ</h2>
+              <p className="mt-1 text-3xl font-extrabold text-gray-900 sm:text-4xl sm:tracking-tight">最新の記事</p>
+              <p className="max-w-xl mt-5 mx-auto text-xl text-gray-500">最新のトピックや役立つ情報をお届けします</p>
             </div>
-            <div className="mt-10 text-center">
-              <Link
-                href="/blog"
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
-              >
-                すべての記事を見る
-              </Link>
+
+            <div className="mt-12">
+              <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                {data.contents.map((blog) => (
+                  <BlogCard key={blog.id} blog={blog} />
+                ))}
+              </div>
+              <div className="mt-10 text-center">
+                <Link
+                  href="/blog"
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
+                >
+                  すべての記事を見る
+                </Link>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </>
     )
   } catch (error) {
     console.error("Error fetching blog data:", error)

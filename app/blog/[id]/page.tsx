@@ -4,7 +4,8 @@ import { getContent, getContents } from "@/lib/microcms"
 import type { Blog, BlogResponse } from "@/types/blog"
 import { formatDate } from "@/lib/utils"
 
-export const revalidate = 60
+// revalidateの値を小さくする
+export const revalidate = 10
 
 export async function generateStaticParams() {
   try {
@@ -20,7 +21,10 @@ export async function generateStaticParams() {
 
 export default async function BlogDetailPage({ params }: { params: { id: string } }) {
   try {
-    const blog = (await getContent("blogs", params.id)) as Blog
+    // キャッシュを無効化するためのオプションを追加
+    const blog = (await getContent("blogs", params.id, {
+      _: new Date().getTime(),
+    })) as Blog
 
     return (
       <div className="bg-white">
